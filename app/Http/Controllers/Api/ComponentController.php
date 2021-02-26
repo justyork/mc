@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ComponentResource;
 use App\Models\Component;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -22,10 +23,20 @@ class ComponentController extends Controller
      */
     public function store(Request $request)
     {
+        $name = $request->post('name');
+        $typeId = $request->post('typeId');
+        $metalId = $request->post('metalId');
+        $tier = $request->post('tier');
+        if ($name) {
+            $component = Component::firstOrNew(['name' => $request->post('name'), 'tier' => $tier]);
+        } else {
+            $component = Component::where('type_id', $typeId)->where('metal_id', $metalId)->firstOrNew();
+        }
 
-        $component = Component::firstOrNew(['name' => $request->post('name')]);
         $component->name = $request->post('name');
-        $component->tier = $request->post('tier');
+        $component->type_id = $typeId;
+        $component->metal_id = $metalId;
+        $component->tier = $tier;
 
         if ($component->exists()) {
             $component->elements()->delete();

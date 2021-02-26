@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\ComponentController;
 use App\Http\Resources\ComponentResource;
+use App\Models\Metal;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,13 +20,15 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        'components' => ComponentResource::collection(\App\Models\Component::orderBy('name')->get())
+        'components' => ComponentResource::collection(\App\Models\Component::orderBy('name')->get()),
+        'metals' => Metal::orderBy('name')->get(),
+        'types' => \App\Models\ResourceType::orderBy('name')->get(),
     ]);
 });
+
+Route::put('/', [ComponentController::class, 'store']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');

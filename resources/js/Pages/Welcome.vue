@@ -7,14 +7,19 @@
                     <div class="cursor-pointer hover:text-blue-500 " @click="showAddComponent = !showAddComponent">
                     <span v-if="!showAddComponent">
                         <fa icon="plus"  />
-                        Add component
+                        Добавить рецепт
                     </span>
                         <span v-else>
                         <fa icon="times"  />
-                        Close
+                        Закрыть
                     </span>
                     </div>
-                    <add-component v-if="showAddComponent" :tier-list="tierList" :component-list="components.data" />
+                    <add-component :metals="metals"
+                                   :types="types"
+                                   :component-list="components.data"
+                                   :tier-list="tierList"
+                                   v-if="showAddComponent"
+                    />
                 </div>
 
                 <div class="flex w-full p-4">
@@ -24,9 +29,11 @@
                 </div>
             </div>
             <div  style="max-width: 300px;">
-                <h3 class="text-xl font-bold">Added components</h3>
-                <ul v-if="components" class="overflow-y-scroll h-full" style="max-height: 600px;">
-                    <li v-for="(el) in components.data">{{ el.name }}</li>
+                <h3 class="text-xl font-bold">Компоненты в системе</h3>
+                <ul v-if="sortComponents()" class="overflow-y-scroll h-full" style="max-height: 600px;">
+                    <li v-for="(el) in components.data">
+                        <recipe-name :item="el" />
+                    </li>
                 </ul>
             </div>
         </div>
@@ -42,6 +49,7 @@
 <script>
 import AddComponent from "../components/AddComponent";
 import CalculatorComponent from "../components/CalculatorComponent";
+import RecipeName from "@/components/RecipeName";
 
     export default {
         props: {
@@ -50,10 +58,36 @@ import CalculatorComponent from "../components/CalculatorComponent";
             laravelVersion: String,
             phpVersion: String,
             components: Array,
+            metals: Array,
+            types: Array,
         },
         components: {
+            RecipeName,
             calculator:CalculatorComponent,
             AddComponent,
+        },
+        methods: {
+
+            getName(el) {
+                return el.name + (el.tier ? ' ('+this.tierList[el.tier]+')' : '');
+            },
+            mapParams(items) {
+                let arr = {};
+                items.forEach((item) => {
+                    arr[item.id] = item.name
+                })
+                return arr;
+            },
+            sortComponents() {
+                let components = this.components.data;
+                components.sort(function(a,b) {
+                    let x = a.fullName.toLowerCase();
+                    let y = b.fullName.toLowerCase();
+                    return x < y ? -1 : x > y ? 1 : 0;
+                });
+
+                return components
+            }
         },
         data() {
             return {
@@ -63,11 +97,19 @@ import CalculatorComponent from "../components/CalculatorComponent";
                     '32 LV',
                     '128 MV',
                     '512 HV',
-                    '2048 UHV',
-                    '8194'
+                    '2048 EV',
+                    '8192 IV',
+                    '32768 LuV',
+                    '131072 ZPM',
+                    '524288 UV'
                 ],
                 showAddComponent: false
             };
         },
+        created() {
+            localStorage.setItem('metals', JSON.stringify(this.mapParams(this.metals)));
+            localStorage.setItem('types', JSON.stringify(this.mapParams(this.types)));
+            localStorage.setItem('tierList', JSON.stringify(this.tierList));
+        }
     }
 </script>
