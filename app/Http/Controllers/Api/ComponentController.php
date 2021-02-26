@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ComponentResource;
 use App\Models\Component;
+use App\Models\Metal;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -54,7 +55,9 @@ class ComponentController extends Controller
 
         }
         return Inertia::render('Welcome', [
-            'components' => ComponentResource::collection(\App\Models\Component::all())
+            'components' => ComponentResource::collection(\App\Models\Component::all()),
+            'metals' => Metal::orderBy('name')->get(),
+            'types' => \App\Models\ResourceType::orderBy('name')->get(),
         ]);
     }
 }
