@@ -17,6 +17,7 @@ class Component extends Model
     use HasFactory;
 
     public $timestamps = false;
+    public $fillable = ['name', 'tier'];
 
     public function elements()
     {
