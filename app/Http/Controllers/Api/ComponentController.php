@@ -28,6 +28,7 @@ class ComponentController extends Controller
         $typeId = $request->post('typeId');
         $metalId = $request->post('metalId');
         $tier = $request->post('tier');
+
         if ($name) {
             $component = Component::firstOrNew(['name' => $request->post('name'), 'tier' => $tier]);
         } else {

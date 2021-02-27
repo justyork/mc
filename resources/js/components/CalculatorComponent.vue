@@ -14,7 +14,10 @@
             </div>
 
             <div v-if="selectedComponents.length" class="mt-4">
-                <h3>Выбрано</h3>
+                <div class="flex">
+                    <h3 class="text-md font-bold mr-2">Выбрано</h3>
+                    <fa icon="sync" @click="selectedComponents = []; baseElements = [];"/>
+                </div>
                 <div v-for="component in selectedComponents" class="py-2">
                     <recipe-name :item="component"/>
                     <jet-input type="text" class="w-12 h-8 ml-2" v-model="component.count" />
