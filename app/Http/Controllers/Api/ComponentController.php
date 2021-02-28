@@ -44,16 +44,12 @@ class ComponentController extends Controller
             $component->elements()->delete();
         }
 
-        try {
-            $component->saveOrFail();
+        $component->saveOrFail();
 
-            if ($request->post('components')) {
-                foreach ($request->post('components') as $el) {
-                    $component->addElement($el['component_id'], $el['count']);
-                }
+        if ($request->post('components')) {
+            foreach ($request->post('components') as $el) {
+                $component->addElement($el['component_id'], $el['count']);
             }
-        } catch (\Exception $e){
-
         }
         return Inertia::render('Welcome', [
             'components' => ComponentResource::collection(\App\Models\Component::all()),

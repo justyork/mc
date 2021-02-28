@@ -16,7 +16,7 @@ class AddTypeToComponent extends Migration
         Schema::table('components', function (Blueprint $table) {
             $table->integer('type_id');
             $table->integer('metal_id');
-            $table->string('param');
+            $table->string('param')->nullable();
             $table->string('name')->nullable()->change();
         });
     }
