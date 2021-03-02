@@ -26,14 +26,22 @@
         </div>
         <div v-if="selectedComponents.length" v-html="calculatedList" class="ml-4">
         </div>
-        <ul class="ml-4 bg-white border border-gray-500 p-2" v-if="Object.keys(baseElements).length">
-            <li v-for="el in baseElements" class="flex">
-                <jet-checkbox v-model="el.checked" />
-                <div :className="(el.checked ? 'line-through' : '') + ' ml-2' ">
-                    <recipe-name :item="el" /> <span class="text-sm text-gray-500">({{ el.count }})</span>
-                </div>
-            </li>
-        </ul>
+        <div class="ml-4 bg-white border border-gray-500 p-2" v-if="Object.keys(baseElements).length">
+            <div v-if="elementTypes.length" class="flex">
+                <select v-model="filter.type" class="h-8 mb-4 py-1">
+                    <option :value="typeId" v-for="typeId in elementTypes">{{ typeId !== 0 ? types[typeId] : 'Без типа' }}</option>
+                </select>
+                <fa class="text-red-500 ml-2 mt-2" @click="setFilter('type', false)" icon="times"/>
+            </div>
+            <ul>
+                <li v-for="el in baseItems" class="flex">
+                    <jet-checkbox v-model="el.checked" />
+                    <div :className="(el.checked ? 'line-through' : '') + ' ml-2' ">
+                        <recipe-name :item="el" /> <span class="text-sm text-gray-500">({{ el.count }})</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 
 </template>
@@ -68,8 +76,33 @@ export default {
             })
             return row;
         },
+        elementTypes() {
+            let typeList = [];
+            if (this.baseElements) {
+                for (let el in this.baseElements) {
+                    if (typeList.indexOf(this.baseElements[el].type_id) === -1) {
+                        typeList.push(this.baseElements[el].type_id)
+                    }
+                }
+            }
+
+            return typeList
+        },
+        baseItems: function () {
+            let items = Object.values(this.baseElements);
+
+            if (this.filter.type) {
+                items = items.filter(el => el.type_id === this.filter.type)
+            }
+
+            items.sort((a, b) => a.type_id < b.type_id)
+            return items
+        }
     },
     methods: {
+        setFilter(name, val) {
+            this.filter[name] = val
+        },
         selectComponent(el) {
             el.count = 1;
             this.selectedComponents.push(el);
@@ -126,7 +159,11 @@ export default {
             levels: {},
             baseElements: {},
             metals: null,
-            types: null
+            types: null,
+            selectedTypeList: [],
+            filter: {
+                type: false
+            }
         };
     },
     props: {

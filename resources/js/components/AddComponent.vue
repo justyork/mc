@@ -31,8 +31,8 @@
                         <jet-input id="name" type="text" class="mt-1 block" v-model="form.name" required autofocus autocomplete="name" />
                     </div>
                 </div>
-                <div class="ml-2 pt-2" v-if="form.name !== '' || (form.metalId && form.typeId)">
-                    <fa icon="sync" v-if="existsValue" />
+                <div class="ml-2 mt-8" v-if="form.name !== '' || (form.metalId && form.typeId)">
+                    <fa icon="sync" v-if="existsIndex !== -1" />
                     <fa icon="check-circle" v-else />
                 </div>
             </div>
@@ -49,8 +49,8 @@
             <fa icon="plus" class="mr-2"/>
             Добавить элемент
         </span>
-        <div v-if="form.components">
-            <div v-for="(component, key) in form.components" class="flex">
+        <div v-if="elementList">
+            <div v-for="(component, key) in elementList" class="flex">
                 <select v-model="component.component_id" class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block">
                     <option v-for="item in componentList" :value="item.id"><recipe-name :item="item"/></option>
                 </select>
@@ -87,11 +87,26 @@ import RecipeName from "@/components/RecipeName";
             JetLabel,
         },
         computed: {
-            existsValue() {
-                if (!this.form.fullName) {
-                    return false;
+            existsIndex() {
+                return this.componentList.findIndex((el) =>  {
+                    if (el.name) {
+                        return el.name.toLowerCase() === this.form.name.toLowerCase() && el.tier === this.form.tier
+                    } else {
+                        return el.metal_id === this.form.metalId && el.type_id === this.form.typeId;
+                    }
+                });
+            },
+            elementList() {
+                let elements = this.form.components;
+
+                let index = this.existsIndex
+
+                if (index !== -1) {
+                    elements = this.componentList[index].elements
+                    this.form.components = elements
                 }
-                return this.componentList.findIndex((el) => el.fullName.toLowerCase() === this.form.name.toLowerCase()) !== -1;
+
+                return elements;
             }
         },
         data() {
