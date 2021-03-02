@@ -29459,6 +29459,16 @@ __webpack_require__.r(__webpack_exports__);
       this.selectedComponents.push(el);
       this.searchValue = '';
     },
+    toggleComponent: function toggleComponent(el) {
+      if (this.isChecked(el)) {
+        this.checkedComponents.splice(this.checkedComponents.indexOf(el.id), 1);
+      } else {
+        this.checkedComponents.push(el.id);
+      }
+    },
+    isChecked: function isChecked(el) {
+      return this.checkedComponents.indexOf(el.id) !== -1;
+    },
     elementTree: function elementTree(el) {
       var _this4 = this;
 
@@ -29502,6 +29512,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.baseElements[el.id] === undefined) {
         this.baseElements[el.id] = {
+          id: el.id,
           count: count,
           name: el.name,
           tier: el.tier,
@@ -29524,7 +29535,8 @@ __webpack_require__.r(__webpack_exports__);
       selectedTypeList: [],
       filter: {
         type: false
-      }
+      },
+      checkedComponents: []
     };
   },
   props: {
@@ -34435,8 +34447,6 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
 
   var _component_fa = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("fa");
 
-  var _component_jet_checkbox = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("jet-checkbox");
-
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_jet_input, {
     type: "text",
     modelValue: $data.searchValue,
@@ -34511,15 +34521,11 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     }),
     icon: "times"
   })])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("ul", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.baseItems, function (el) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_jet_checkbox, {
-      modelValue: el.checked,
-      "onUpdate:modelValue": function onUpdateModelValue($event) {
-        return el.checked = $event;
-      }
-    }, null, 8
-    /* PROPS */
-    , ["modelValue", "onUpdate:modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
-      className: (el.checked ? 'line-through' : '') + ' ml-2'
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)("li", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)("div", {
+      onClick: function onClick($event) {
+        return $options.toggleComponent(el);
+      },
+      className: ($options.isChecked(el) ? 'line-through text-gray-200 hover:text-gray-400' : 'hover:text-red-500') + ' ml-2 cursor-pointer'
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_recipe_name, {
       item: el
     }, null, 8
@@ -34528,7 +34534,7 @@ var render = /*#__PURE__*/_withId(function (_ctx, _cache, $props, $setup, $data,
     /* TEXT */
     )], 8
     /* PROPS */
-    , ["className"])]);
+    , ["onClick", "className"])]);
   }), 256
   /* UNKEYED_FRAGMENT */
   ))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);

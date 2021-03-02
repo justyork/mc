@@ -35,8 +35,7 @@
             </div>
             <ul>
                 <li v-for="el in baseItems" class="flex">
-                    <jet-checkbox v-model="el.checked" />
-                    <div :className="(el.checked ? 'line-through' : '') + ' ml-2' ">
+                    <div @click="toggleComponent(el)" :className="(isChecked(el) ? 'line-through text-gray-200 hover:text-gray-400' : 'hover:text-red-500') + ' ml-2 cursor-pointer' ">
                         <recipe-name :item="el" /> <span class="text-sm text-gray-500">({{ el.count }})</span>
                     </div>
                 </li>
@@ -108,6 +107,16 @@ export default {
             this.selectedComponents.push(el);
             this.searchValue = '';
         },
+        toggleComponent(el) {
+            if (this.isChecked(el)) {
+                this.checkedComponents.splice(this.checkedComponents.indexOf(el.id), 1)
+            } else {
+                this.checkedComponents.push(el.id)
+            }
+        },
+        isChecked(el) {
+            return this.checkedComponents.indexOf(el.id) !== -1;
+        },
         elementTree(el, count = 1, lvl = 0) {
             if (el.elements.length === 0) {
                 this.addBaseEl(el, count)
@@ -146,7 +155,7 @@ export default {
         addBaseEl(el, count) {
             count = parseFloat(count)
             if (this.baseElements[el.id] === undefined) {
-                this.baseElements[el.id] = {count: count, name: el.name, tier: el.tier, metal_id: el.metal_id, type_id: el.type_id}
+                this.baseElements[el.id] = {id: el.id, count: count, name: el.name, tier: el.tier, metal_id: el.metal_id, type_id: el.type_id}
             } else {
                 this.baseElements[el.id].count += count;
             }
@@ -163,7 +172,8 @@ export default {
             selectedTypeList: [],
             filter: {
                 type: false
-            }
+            },
+            checkedComponents: []
         };
     },
     props: {
