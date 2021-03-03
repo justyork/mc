@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $metal_id
  * @property int $type_id
+ * @property int $amount
  * @property string $params
  */
 class Component extends Model

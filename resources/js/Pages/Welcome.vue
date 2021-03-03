@@ -16,8 +16,10 @@
                     </div>
                     <add-component :metals="metals"
                                    :types="types"
+                                   :executes="executes"
                                    :component-list="components.data"
                                    :tier-list="tierList"
+                                   :selectedRecipe="selectedRecepie"
                                    v-if="showAddComponent"
                     />
                 </div>
@@ -32,7 +34,7 @@
                 <h3 class="text-xl font-bold">Компоненты в системе</h3>
                 <ul v-if="sortComponents()" class="overflow-y-scroll h-full" style="max-height: 600px;">
                     <li v-for="(el) in components.data">
-                        <recipe-name :item="el" />
+                        <recipe-name :item="el"  />
                     </li>
                 </ul>
             </div>
@@ -60,6 +62,7 @@ import RecipeName from "@/components/RecipeName";
             components: Array,
             metals: Array,
             types: Array,
+            executes: Array,
         },
         components: {
             RecipeName,
@@ -103,12 +106,14 @@ import RecipeName from "@/components/RecipeName";
                     '131072 ZPM',
                     '524288 UV'
                 ],
-                showAddComponent: false
+                showAddComponent: false,
+                selectedRecepie: false
             };
         },
         created() {
             localStorage.setItem('metals', JSON.stringify(this.mapParams(this.metals)));
             localStorage.setItem('types', JSON.stringify(this.mapParams(this.types)));
+            localStorage.setItem('executes', JSON.stringify(this.mapParams(this.executes)));
             localStorage.setItem('tierList', JSON.stringify(this.tierList));
         }
     }

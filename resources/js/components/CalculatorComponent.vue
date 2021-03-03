@@ -36,7 +36,9 @@
             <ul>
                 <li v-for="el in baseItems" class="flex">
                     <div @click="toggleComponent(el)" :className="(isChecked(el) ? 'line-through text-gray-200 hover:text-gray-400' : 'hover:text-red-500') + ' ml-2 cursor-pointer' ">
-                        <recipe-name :item="el" /> <span class="text-sm text-gray-500">({{ el.count }})</span>
+                        <recipe-name :item="el" />
+                        <span class="text-sm text-gray-500">({{ el.count * el.amount }})</span>
+                        <span v-if="el.execute_id" class="ml-4 text-xs text-gray-500">{{executes[el.execute_id]}}</span>
                     </div>
                 </li>
             </ul>
@@ -71,7 +73,7 @@ export default {
             let row = '';
             this.baseElements = {};
             this.selectedComponents.forEach((el) => {
-                row += this.elementTree(el, el.count);
+                row += this.elementTree(el, Math.ceil(el.count / el.amount));
             })
             return row;
         },
@@ -128,10 +130,13 @@ export default {
             el.elements.forEach((element) => {
                 let index = this.componentList.findIndex((comp) => comp.id === element.component_id);
                 let component = this.componentList[index];
-                row += this.elementTree(component, parseInt(count) * parseFloat(element.count), lvl + 1)
+                row += this.elementTree(component, this.getCorrectCount(component.amount, element.count, count), lvl + 1)
             });
 
             return row;
+        },
+        getCorrectCount(min, elementAmount, count) {
+            return Math.ceil(count / min) * parseInt(elementAmount);
         },
         name(el) {
             let tier = (el.tier ? ' ('+this.tierList[el.tier]+')' : '');
@@ -149,13 +154,13 @@ export default {
             let offset = lvl * 40;
             return `
                 <div class="" style="padding-left: ${offset}px">
-                     ${this.name(el)} <span class="text-gray-500 text-sm">(${count})</span>
+                     ${this.name(el)} <span class="text-gray-500 text-sm">(${count * el.amount})</span>
                 </div>`;
         },
         addBaseEl(el, count) {
             count = parseFloat(count)
             if (this.baseElements[el.id] === undefined) {
-                this.baseElements[el.id] = {id: el.id, count: count, name: el.name, tier: el.tier, metal_id: el.metal_id, type_id: el.type_id}
+                this.baseElements[el.id] = {id: el.id, count: count, name: el.name, tier: el.tier, amount: el.amount, param: el.param, metal_id: el.metal_id, type_id: el.type_id, execute_id: el.execute_id}
             } else {
                 this.baseElements[el.id].count += count;
             }
@@ -169,6 +174,7 @@ export default {
             baseElements: {},
             metals: null,
             types: null,
+            executes: null,
             selectedTypeList: [],
             filter: {
                 type: false
@@ -194,6 +200,13 @@ export default {
                 this.types = JSON.parse(localStorage.getItem('types'));
             } catch(e) {
                 localStorage.removeItem('types');
+            }
+        }
+        if (localStorage.getItem('executes')) {
+            try {
+                this.executes = JSON.parse(localStorage.getItem('executes'));
+            } catch(e) {
+                localStorage.removeItem('executes');
             }
         }
     }

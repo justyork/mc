@@ -38,6 +38,9 @@ class ComponentController extends Controller
         $component->name = $request->post('name');
         $component->type_id = $typeId;
         $component->metal_id = $metalId;
+        $component->amount = $request->post('amount');
+        $component->param = $request->post('param');
+        $component->execute_id = $request->post('executeId');
         $component->tier = $tier;
 
         if ($component->exists()) {
@@ -55,6 +58,7 @@ class ComponentController extends Controller
             'components' => ComponentResource::collection(\App\Models\Component::all()),
             'metals' => Metal::orderBy('name')->get(),
             'types' => \App\Models\ResourceType::orderBy('name')->get(),
+            'execute' => \App\Http\Resources\ExecuteResource::collection(\App\Models\Execute::orderBy('name')->get()),
         ]);
     }
 }

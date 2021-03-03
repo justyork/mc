@@ -23,6 +23,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
         'components' => ComponentResource::collection(\App\Models\Component::orderBy('name')->get()),
+        'executes' => \App\Models\Execute::orderBy('name')->get(),
         'metals' => Metal::orderBy('name')->get(),
         'types' => \App\Models\ResourceType::orderBy('name')->get(),
     ]);

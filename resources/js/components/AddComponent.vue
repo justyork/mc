@@ -12,7 +12,7 @@
                 </div>
 
                 <div v-if="selectInputType" class="flex">
-                    <div>
+                    <div class="mr-2">
                         <jet-label for="name" value="Метал" />
                         <select v-model="form.metalId" class="w-40 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block">
                             <option v-for="metal in metals" :value="metal.id">{{ metal.name }}</option>
@@ -28,7 +28,7 @@
                 <div v-else>
                     <jet-label for="name" value="Название" />
                     <div class="flex">
-                        <jet-input id="name" type="text" class="mt-1 block" v-model="form.name" required autofocus autocomplete="name" />
+                        <jet-input id="name" type="text" class="mt-1 block" v-model="form.name" required autofocus autocomplete="none" />
                     </div>
                 </div>
                 <div class="ml-2 mt-8" v-if="form.name !== '' || (form.metalId && form.typeId)">
@@ -42,6 +42,17 @@
                     <option v-for="(name, key) in tierList"
                             :key="key"
                             :value="key">{{ name }}</option>
+                </select>
+            </div>
+            <div class="ml-4">
+                <jet-label for="amount" value="Количество" />
+                <jet-input type="text" id="amount" v-model="form.amount" class="w-12 mt-1 block"/>
+            </div>
+            <div class="ml-4">
+                <jet-label for="execute" value="Устройство крафта" />
+                <select id="execute" v-model="form.executeId" class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block">
+                    <option value="0">None</option>
+                    <option v-for="ex in executes" :value="ex.id">{{ ex.name }}</option>
                 </select>
             </div>
         </div>
@@ -78,7 +89,9 @@ import RecipeName from "@/components/RecipeName";
             'tierList': Array,
             'componentList': Array,
             'metals': Array,
-            'types': Array
+            'types': Array,
+            'executes': Array,
+            // 'selectedRecepie': Object || null,
         },
         components: {
             RecipeName,
@@ -113,10 +126,13 @@ import RecipeName from "@/components/RecipeName";
             return {
                 form: this.$inertia.form({
                     name: '',
+                    param: '',
                     tier: 0,
                     components: [],
                     metalId: 0,
-                    typeId: 0
+                    typeId: 0,
+                    executeId: 0,
+                    amount: 1
                 }),
                 selectInputType: true,
             };
@@ -141,7 +157,7 @@ import RecipeName from "@/components/RecipeName";
 
                 this.form.put('/', {
                     onFinish: () => {
-                        this.form.reset('name', 'tier', 'metalId', 'typeId');
+                        this.form.reset('name', 'tier', 'metalId', 'typeId', 'amount', 'param', 'executeId');
                         this.form.components = [];
                     },
                     preserveScroll: false,
