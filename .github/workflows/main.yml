@@ -28,7 +28,8 @@ jobs:
     - name: Deploy to production
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.production.HOST }}
-        username: ${{ secrets.production.USERNAME }}
-        password: ${{ secrets.production.PASSWORD }}
+        debug: true
+        host: 62.109.19.118
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
         script: 'cd /var/www/www-root/data/www/mc.web-y.ru && ./server_deploy.sh'
