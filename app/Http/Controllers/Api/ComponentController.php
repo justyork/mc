@@ -58,7 +58,7 @@ class ComponentController extends Controller
             'components' => ComponentResource::collection(\App\Models\Component::all()),
             'metals' => Metal::orderBy('name')->get(),
             'types' => \App\Models\ResourceType::orderBy('name')->get(),
-            'execute' => \App\Http\Resources\ExecuteResource::collection(\App\Models\Execute::orderBy('name')->get()),
+            'executes' => \App\Models\Execute::orderBy('name')->get(),
         ]);
     }
 }
