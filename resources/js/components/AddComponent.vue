@@ -117,6 +117,8 @@ import RecipeName from "@/components/RecipeName";
                 if (index !== -1) {
                     elements = this.componentList[index].elements
                     this.form.components = elements
+                    this.form.amount = this.componentList[index].amount
+                    this.form.executeId = this.componentList[index].execute_id
                 }
 
                 return elements;
