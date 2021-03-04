@@ -32,4 +32,4 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        script: 'cd /var/www/www-root/data/www/mc.web-y.ru && ./server_deploy.sh'
+        script: 'cd /var/www/www-root/data/www/mc.web-y.ru && bash ./server_deploy.sh'
